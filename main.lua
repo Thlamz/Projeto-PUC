@@ -6,7 +6,7 @@ function love.load()
     
     msgr.start('love',minhamat,coord_mov) -- Ao receber mensagem executa a função coord_mov
     mov = '' --Estado inicial da movimentação
-    timer = 0
+    dist = 0 -- Variavel auxiliar "distância", para a movimentação
     
 
     love.window.setTitle('Projeto Final')
@@ -67,7 +67,6 @@ function cria_trilha(dt) -- Trilha do asteroide
         trilha[i].y = trilha[i].y + dt*k + (i)
     end
 end
-    
 
 function desenha_trilha()
     for i=1,ntri do
@@ -75,6 +74,7 @@ function desenha_trilha()
         love.graphics.rectangle('fill',trilha[i].x,trilha[i].y,1,50) 
     end
 end
+
 
 
 function coord_mov(msg) -- coordena a movimentação
@@ -90,7 +90,7 @@ end
 
 function exec_mov(dt) -- Executa movimento
     
-    if asx>5*w/6 and mov=='dir' then --Impede que saia da tela pela direita
+   if asx>5*w/6 and mov=='dir' then --Impede que saia da tela pela direita
         mov = ''
     end
     
@@ -98,45 +98,43 @@ function exec_mov(dt) -- Executa movimento
         mov = ''
     end
     
-    if math.abs(asx - w/2)<50 and timer==0 then --Centraliza o asteroide para compensar pequenos erros
+    if math.abs(asx - w/2)<50 and dist==0 then --Centraliza o asteroide para compensar pequenos erros
         asx = w/2
     end
     
     
-    
     if mov=='esq' then
-        timer = timer + 1
+        dist = dist + (2/6*w)*dt*3 -- Essa formulas garante velocidade fixa independente da velocidade do computador
         
-        asx = asx - (2/6*w)/30
+        asx = asx - (2/6*w)*dt*3
     
     elseif mov=='dir' then
-        timer = timer + 1
+        dist = dist + (2/6*w)*dt*3
         
-        asx = asx + (2/6*w)/30
+        asx = asx + (2/6*w)*dt*3
     
     else
-        timer = 0
+        dist = 0
     end
     
-    
-    if timer >= 30 then
+    if dist >= 2/6*w then
         mov = ''
     end
-    
 end
 
+
 function love.update(dt)
-    
+
     rot = rot + dt*math.pi/5 -- Rotaciona o asteroide a cada update
     
     msgr.checkMessages()
     cria_trilha(dt)
     exec_mov(dt)
+    
 end
 
 
 function love.draw()
-    
     desenha_trilha()    
     desenha_asteroide()
   
