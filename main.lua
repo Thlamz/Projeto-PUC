@@ -90,15 +90,15 @@ end
 
 function exec_mov(dt) -- Executa movimento
     
-    if asx>w/2+(30*k*dt*2) and mov=='dir' then --Impede que saia da tela pela direita
+    if asx>5*w/6 and mov=='dir' then --Impede que saia da tela pela direita
         mov = ''
     end
     
-    if asx<w/2-(30*k*dt*2) and mov=='esq' then --Impede que saia da tela pela esquerda
+    if asx<w/6 and mov=='esq' then --Impede que saia da tela pela esquerda
         mov = ''
     end
     
-    if math.abs(asx - w/2)<30 and timer==0 then --Centraliza o asteroide para compensar pequenos erros
+    if math.abs(asx - w/2)<50 and timer==0 then --Centraliza o asteroide para compensar pequenos erros
         asx = w/2
     end
     
@@ -107,12 +107,12 @@ function exec_mov(dt) -- Executa movimento
     if mov=='esq' then
         timer = timer + 1
         
-        asx = asx - k*dt*2
+        asx = asx - (2/6*w)/30
     
     elseif mov=='dir' then
         timer = timer + 1
         
-        asx = asx + k*dt*2
+        asx = asx + (2/6*w)/30
     
     else
         timer = 0
