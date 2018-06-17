@@ -21,9 +21,6 @@ function desenha_asteroide()
 end
 
 
-
-
-
 function love.update(dt)
     
     rot = rot + dt*math.pi/5
