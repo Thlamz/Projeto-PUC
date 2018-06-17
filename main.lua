@@ -21,6 +21,7 @@ function love.load()
     
 end
 
+
 function desenha_asteroide()
     local ax,ay = asteroide:getDimensions()
     
@@ -77,9 +78,5 @@ function love.draw()
     
     desenha_trilha()    
     desenha_asteroide()
-
-    
-
-    
-
+  
 end
