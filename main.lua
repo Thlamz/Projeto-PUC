@@ -2,6 +2,7 @@ msgr = require('mqttLoveLibrary')
 
 
 function love.load()
+    minhamat = '1810981' -- Sua matricula
     
     --Tela
     love.window.setTitle('Projeto Final')
@@ -27,7 +28,6 @@ function love.load()
     end
     -------------------------------//-------------------------------
     --Defaults
-    minhamat = '1810981' -- Sua matricula
     rot = 0 -- Rotação original
     asx = w*(math.floor(nfaixas/2))/(nfaixas) -- X inicial do asteroide
     k = 300 -- Constante de movimentação
