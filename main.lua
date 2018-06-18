@@ -11,7 +11,7 @@ function love.load()
     -------------------------------//-------------------------------
     --Movimentação
     msgr.start('love',minhamat,coord_mov) -- Ao receber mensagem executa a função coord_mov
-    vmov=1 -- Velocidade da movimentação
+    vmov= 5 -- Velocidade da movimentação
     nfaixas = 3 -- Número de faixas na movimentação
     mov = '' --Estado inicial da movimentação
     dist = 0 -- Variavel auxiliar "distância", para a movimentação
@@ -21,7 +21,7 @@ function love.load()
     asteroide = love.graphics.newImage('asteroide.png')
     -------------------------------//-------------------------------
     --Trilha
-    ntri = 5 -- Numero de trilhas de asteroide
+    ntri = 6 -- Numero de trilhas de asteroide
     trilha = {}
     for i=1,ntri do 
         trilha[i] = {x=w/2,y=h} -- Inicializa "ntri" trilhas com valores default
@@ -35,6 +35,14 @@ function love.load()
     -------------------------------//------------------------------
 end
 
+function faz_background()
+  
+  local X,Y = background:getDimensions()
+  
+  love.graphics.setColor(1,1,1)
+  
+  love.graphics.draw(background,0,0)
+end
 
 function desenha_asteroide()
     local ax,ay = asteroide:getDimensions()
@@ -137,6 +145,7 @@ end
 
 
 function love.draw()
+    faz_background
     desenha_trilha()    
     desenha_asteroide()
   
