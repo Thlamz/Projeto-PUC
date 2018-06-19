@@ -19,6 +19,7 @@ function love.load()
     -------------------------------//------------------------------
     --Sprites
     asteroide = love.graphics.newImage('asteroide.png')
+    background = love.graphics.newImage("BKG.png")
     -------------------------------//-------------------------------
     --Trilha
     ntri = 6 -- Numero de trilhas de asteroide
@@ -145,7 +146,7 @@ end
 
 
 function love.draw()
-    faz_background
+    faz_background()
     desenha_trilha()    
     desenha_asteroide()
   
