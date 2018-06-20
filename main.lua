@@ -143,10 +143,10 @@ end
 
 function love.keypressed(key)
   print('pressionou '..key)
-  if key=='a' then
+  if key=='a' or key=='left' then
     mov='esq'
   
-  elseif key=='d' then
+  elseif key=='d' or key=='right' then
     mov='dir'
   end
 end
