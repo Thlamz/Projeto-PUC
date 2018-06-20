@@ -4,13 +4,18 @@ msgr = require('mqttLoveLibrary')
 function love.load()
   minhamat = '1810981' -- Sua matricula
 
+
+  --Textos
+  menuf = love.graphics.newFont('arial.ttf',30)
+  menu = love.graphics.newText(menuf,'')
   --Tela
   love.window.setTitle('Projeto Final')
+  love.window.setMode(800,1000)
   love.graphics.setBackgroundColor(0,0,0)
   w,h = love.graphics.getDimensions() -- Dimensões(global)
   -------------------------------//-------------------------------
   --Movimentação
-  msgr.start('love',minhamat,coord_mov) -- Ao receber mensagem executa a função coord_mov
+  msgr.start(minhamat,minhamat,coord_mov) -- Ao receber mensagem executa a função coord_mov
   vmov= 5 -- Velocidade da movimentação
   nfaixas = 3 -- Número de faixas na movimentação
   mov = '' --Estado inicial da movimentação
@@ -29,11 +34,20 @@ function love.load()
   end
   -------------------------------//-------------------------------
   --Defaults
+  estado = 'menu' --Jogo começa no menu
+  starttime = 0 --Inicializa a variavel inicio do jogo
+  runtime = 0 -- Tempo desde o inicio do jogo
   rot = 0 -- Rotação original
   asx = w*(math.floor(nfaixas/2))/(nfaixas) -- X inicial do asteroide
   k = 300 -- Constante de movimentação
   math.randomseed(os.time())
   -------------------------------//------------------------------
+end
+
+
+function tempo_de_jogo()
+  tempo = os.time()
+  runtime = tempo - starttime
 end
 
 function faz_background()
@@ -45,15 +59,25 @@ function faz_background()
   love.graphics.draw(background,0,0)
 end
 
+
+function desenha_menu()
+  menu:set('Aperte "ENTER" ou use o Node para jogar')
+  mx,my = menu:getDimensions()
+  
+  love.graphics.setColor(255,255,0)
+  love.graphics.draw(menu,w/2-mx/2,h/2-my/2)
+end
+
+
 function desenha_asteroide()
   local ax,ay = asteroide:getDimensions()
 
 
   love.graphics.setColor(255,255,255)
-  love.graphics.draw(asteroide,asx,3/4*h,rot,1,1,ax/2,ay/2)
+  love.graphics.draw(asteroide,asx,4/5*h,rot,1,1,ax/2,ay/2)
 
 
-  love.graphics.circle('line',asx,3/4*h,ay/2)
+  love.graphics.circle('line',asx,4/5*h,ay/2)
 end
 
 
@@ -81,6 +105,7 @@ function cria_trilha(dt) -- Trilha do asteroide
   end
 end
 
+
 function desenha_trilha()
   for i=1,ntri do
     love.graphics.setColor(255,255,255)
@@ -89,17 +114,18 @@ function desenha_trilha()
 end
 
 
-
 function coord_mov(msg) -- coordena a movimentação
+  estado='game'
+  
+  
   _,_,inst,mat=string.find(msg,'(%a+)(%d+)')
-  print(inst,mat)
   print('mensagem recebida')
   if mat==minhamat then
-    
+
     if inst=='esq' then
       mov = 'esq'
     end
-
+    
     if inst=='dir' then
       mov = 'dir'
     end
@@ -143,11 +169,22 @@ end
 
 function love.keypressed(key)
   print('pressionou '..key)
-  if key=='a' or key=='left' then
-    mov='esq'
   
-  elseif key=='d' or key=='right' then
-    mov='dir'
+  if key=='return' and estado=='menu' then
+    estado='game' -- Inicia jogo
+    starttime=os.time() -- Tempo de inicio do jogo
+  end
+  
+  
+  if estado=='game' then
+    if mov=='' then
+      if key=='a' or key=='left' then
+        mov='esq'
+      
+      elseif key=='d' or key=='right' then
+        mov='dir'
+      end
+    end
   end
 end
 
@@ -156,15 +193,27 @@ function love.update(dt)
   rot = rot + dt*math.pi/5 -- Rotaciona o asteroide a cada update
 
   msgr.checkMessages()
-  cria_trilha(dt)
-  exec_mov(dt)
+  
+  if estado=='game' then
+    cria_trilha(dt)
+    exec_mov(dt)
+    tempo_de_jogo()
+  end
 
 end
 
 
 function love.draw()
   faz_background()
-  desenha_trilha()    
-  desenha_asteroide()
+  if estado=='menu' then
+    desenha_menu()
+  end
+  
+  
+  if estado=='game' then
+    
+    desenha_trilha()    
+    desenha_asteroide()
+  end
 
 end
