@@ -25,6 +25,7 @@ function love.load()
   --Sprites
   asteroide = love.graphics.newImage('asteroide.png')
   background = love.graphics.newImage("BKG.png")
+  bomb = love.graphics.newImage('bomb.png')
   -------------------------------//-------------------------------
   --Trilha
   ntri = 6 -- Numero de trilhas de asteroide
@@ -49,6 +50,7 @@ function tempo_de_jogo()
   tempo = os.time()
   runtime = tempo - starttime
 end
+
 
 function faz_background()
 
@@ -80,7 +82,7 @@ function desenha_asteroide()
   love.graphics.circle('line',asx,4/5*h,ay/2)
 end
 
-
+  
 function cria_trilha(dt) -- Trilha do asteroide
   local ax,ay = asteroide:getDimensions()
 
