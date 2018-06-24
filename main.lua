@@ -59,6 +59,7 @@ function love.load()
     runtime = 0 -- Tempo desde o inicio do jogo
     rot = 0 -- Rotação original
     asx = w*(math.floor(nfaixas/2))/(nfaixas) -- X inicial do asteroide
+    asy = 4/5*h -- Y do asteroide
     k = 300 -- Constante de movimentação
     math.randomseed(os.time())
     -------------------------------//------------------------------
@@ -115,7 +116,7 @@ function desenha_asteroide()
     love.graphics.draw(asteroide,asx,4/5*h,rot,1,1,ax/2,ay/2)
 
 
-    love.graphics.circle('line',asx,4/5*h,ay/2)
+    love.graphics.circle('line',asx,asy,ay/2)
 end
 
 
@@ -206,11 +207,11 @@ end
 
 function posicao_elemento(dt)
 
-    for _,el in pairs(elementos) do -- Acessa os elementos existentes
+    for key,el in pairs(elementos) do -- Acessa os elementos existentes
         el.y = el.y + k*dt + eltimer/10 --Move os elementos existentes
 
         if el.y>h+10 then -- Deleta os elementos que saem da tela
-            el=nil
+            elementos[key]=nil
         end
     end
 
@@ -266,9 +267,35 @@ function desenha_elementos()
 
 end
 
+function collision()
+    
+    for key,el in pairs(elementos) do
+        
+        if el.tipo==1 then
+            local nx,ny=93,96 --Tamanho da nave
+            local _,ad = asteroide:getDimensions() -- Diametro da colisão do asteroide
+            
+            local dcol = math.sqrt( (asx-(el.x))^2 + (asy-(el.y))^2 )
+
+            if dcol <= ad then
+                elementos[key] = nil
+            end
+        end
+        if el.tipo==2 then
+            local bx,by=bomb:getDimensions() --Tamanho da nave
+            local _,ad = asteroide:getDimensions() -- Diametro da colisão do asteroide
+            
+            local dcol = math.sqrt( (asx-(el.x))^2 + (asy-(el.y))^2 )
+
+            if dcol <= ad then
+                elementos[key] = nil
+            end   
+        end
+    end
+end
+
 
 function love.keypressed(key)
-    --print('pressionou '..key)
 
     if key=='return' and estado=='menu' then
         estado='game' -- Inicia jogo
@@ -296,12 +323,11 @@ function love.update(dt)
 
     if estado=='game' then
         tempo_de_jogo()
-
         cria_trilha(dt)
-
         exec_mov(dt)
-
         posicao_elemento(dt)
+        collision()
+        
     end
 
 end
