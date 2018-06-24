@@ -20,6 +20,7 @@ function love.load()
     --Sprites
     asteroide = love.graphics.newImage('asteroide.png')
     background = love.graphics.newImage("BKG.png")
+    ships = love.graphics.newImage("Ships.png")
     -------------------------------//-------------------------------
     --Trilha
     ntri = 6 -- Numero de trilhas de asteroide
@@ -36,6 +37,18 @@ function love.load()
     -------------------------------//------------------------------
 end
 
+function desenha_nave()
+  
+  local x,y = ships:getDimensions()
+  
+  love.graphics.setColor(1,1,1)
+  
+  ship = love.graphics.newQuad(191,0,93,96,x,y)
+  
+  love.graphics.draw(ships,ship,w/2-48,20)
+end
+
+
 function faz_background()
   
   local X,Y = background:getDimensions()
@@ -44,6 +57,7 @@ function faz_background()
   
   love.graphics.draw(background,0,0)
 end
+
 
 function desenha_asteroide()
     local ax,ay = asteroide:getDimensions()
@@ -89,7 +103,6 @@ function desenha_trilha()
 end
 
 
-
 function coord_mov(msg) -- coordena a movimentação
     print('mensagem recebida')
     if msg=='esq' then
@@ -100,6 +113,7 @@ function coord_mov(msg) -- coordena a movimentação
         mov = 'dir'
     end
 end
+
 
 function exec_mov(dt) -- Executa movimento
     
@@ -149,5 +163,6 @@ function love.draw()
     faz_background()
     desenha_trilha()    
     desenha_asteroide()
+    desenha_nave()
   
 end
