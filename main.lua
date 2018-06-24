@@ -174,10 +174,10 @@ end
 
 
 function posicao_elemento(dt)
-    
+
     for _,el in pairs(elementos) do -- Acessa os elementos existentes
         el.y = el.y + k*dt + eltimer/10 --Move os elementos existentes
-    
+
         if el.y>h+10 then -- Deleta os elementos que saem da tela
             el=nil
         end
@@ -185,96 +185,108 @@ function posicao_elemento(dt)
 
     eltimer = eltimer+dt
     local dtempo = eltimer - ultimoel -- Tempo deste o ultimo elemento (s)
-    
+
     local dificuldade = 5 - (eltimer/30)
-    
+
     if dificuldade<0.1 then
         dificuldade=0.1
     end
     if dtempo>dificuldade or ultimoel==-1 then -- Mais elementos conforme o tempo passa
-        local tipoel = 2--math.floor(math.random(1,3))
-        
-        
+        local tipoel = math.floor(math.random(1,6))
+
+        if tipoel>1 then
+            tipoel = 1
+        else
+            tipoel = 2
+        end
+
+
+
         local faixa = math.floor(math.random(1,nfaixas-1))
         local objx = w*(faixa/nfaixas)
         local objy = 0
-        
+
         for el=1,#elementos+1 do
             if not elementos[el] then -- Coloca o elemento no primeiro espaço vazio da tabela
                 elementos[el] = {x=objx,y=objy,tipo=tipoel}
             end
         end
-        
+
         ultimoel = eltimer
     end
-    
+
 end
 
 function desenha_elementos()
-    
+
     for _,el in pairs(elementos) do
-        
+
+        if el.tipo==1 then
+            nx,ny=nave:getDimensions()
+            love.graphics.draw(nave,el.x-bx/2,el.y-by/2)
+        end
+            
         if el.tipo==2 then -- Tipo 2=bomba
-                bx,by=bomb:getDimensions()
-                love.graphics.draw(bomb,el.x-bx/2,el.y-by/2)
+            bx,by=bomb:getDimensions()
+            love.graphics.draw(bomb,el.x-bx/2,el.y-by/2)
         end
     end
-    
+
 end
 
 
-    function love.keypressed(key)
-        --print('pressionou '..key)
+function love.keypressed(key)
+    --print('pressionou '..key)
 
-        if key=='return' and estado=='menu' then
-            estado='game' -- Inicia jogo
-            starttime=os.time() -- Tempo de inicio do jogo
-        end
+    if key=='return' and estado=='menu' then
+        estado='game' -- Inicia jogo
+        starttime=os.time() -- Tempo de inicio do jogo
+    end
 
 
-        if estado=='game' then
-            if mov=='' then
-                if key=='a' or key=='left' then
-                    mov='esq'
+    if estado=='game' then
+        if mov=='' then
+            if key=='a' or key=='left' then
+                mov='esq'
 
-                elseif key=='d' or key=='right' then
-                    mov='dir'
-                end
+            elseif key=='d' or key=='right' then
+                mov='dir'
             end
         end
     end
+end
 
 
-    function love.update(dt)
-        rot = rot + dt*math.pi/5 -- Rotaciona o asteroide a cada update
+function love.update(dt)
+    rot = rot + dt*math.pi/5 -- Rotaciona o asteroide a cada update
 
-        msgr.checkMessages()
+    msgr.checkMessages()
 
-        if estado=='game' then
-            tempo_de_jogo()
-            
-            cria_trilha(dt)
-            
-            exec_mov(dt)
-            
-            posicao_elemento(dt)
-        end
+    if estado=='game' then
+        tempo_de_jogo()
 
+        cria_trilha(dt)
+
+        exec_mov(dt)
+
+        posicao_elemento(dt)
+    end
+
+end
+
+
+function love.draw()
+    faz_background()
+    if estado=='menu' then
+        desenha_menu()
     end
 
 
-    function love.draw()
-        faz_background()
-        if estado=='menu' then
-            desenha_menu()
-        end
+    if estado=='game' then
 
-
-        if estado=='game' then
-
-            desenha_trilha()    
-            desenha_elementos()
-            desenha_asteroide()
-        end
-
+        desenha_trilha()    
+        desenha_elementos()
+        desenha_asteroide()
     end
+
+end
