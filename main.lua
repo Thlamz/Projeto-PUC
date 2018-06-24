@@ -26,6 +26,10 @@ function love.load()
     asteroide = love.graphics.newImage('asteroide.png')
     background = love.graphics.newImage("BKG.png")
     bomb = love.graphics.newImage('bomb.png')
+    ships = love.graphics.newImage("Ships.png")
+    
+    local nx,ny = ships:getDimensions()
+    ship = love.graphics.newQuad(191,0,93,96,nx,ny)
     -------------------------------//-------------------------------
     --Trilha
     ntri = 6 -- Numero de trilhas de asteroide
@@ -186,7 +190,7 @@ function posicao_elemento(dt)
     eltimer = eltimer+dt
     local dtempo = eltimer - ultimoel -- Tempo deste o ultimo elemento (s)
 
-    local dificuldade = 5 - (eltimer/30)
+    local dificuldade = 5 - (eltimer/15)
 
     if dificuldade<0.1 then
         dificuldade=0.1
@@ -222,8 +226,9 @@ function desenha_elementos()
     for _,el in pairs(elementos) do
 
         if el.tipo==1 then
-            nx,ny=nave:getDimensions()
-            love.graphics.draw(nave,el.x-bx/2,el.y-by/2)
+            nx,ny=ships:getDimensions()
+            
+            love.graphics.draw(ships,ship,el.x-(93/2),el.y-(96/2))
         end
             
         if el.tipo==2 then -- Tipo 2=bomba
