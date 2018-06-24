@@ -281,6 +281,7 @@ function love.draw()
         desenha_menu()
     end
 
+<<<<<<< HEAD
 
     if estado=='game' then
 
@@ -290,3 +291,5 @@ function love.draw()
     end
 
 end
+=======
+>>>>>>> dev
