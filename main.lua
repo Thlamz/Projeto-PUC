@@ -6,7 +6,9 @@ function love.load()
 
 
     --Textos
-    menuf = love.graphics.newFont('arial.ttf',30)
+    titulo = love.graphics.newFont('BLADRMF_.TTF',60)
+    menuf = love.graphics.newFont('BLADRMF_.TTF',30)
+    menuT = love.graphics.newText(titulo,'')
     menu = love.graphics.newText(menuf,'')
     --Tela
     love.window.setTitle('Projeto Final')
@@ -25,11 +27,19 @@ function love.load()
     --Sprites
     asteroide = love.graphics.newImage('asteroide.png')
     background = love.graphics.newImage("BKG.png")
+    backgroundmenu = love.graphics.newImage("BKGM.png")
     bomb = love.graphics.newImage('bomb.png')
-    ships = love.graphics.newImage("Ships.png")
     
+    hp = love.graphics.newImage("HP.png")
+    local vx,vy = hp:getDimensions()
+    fullhp = love.graphics.newQuad(2,0,54,55,vx,vy)
+    halfhp = love.graphics.newQuad(61,0,54,55,vx,vy)
+    nohp = love.graphics.newQuad(119,0,54,55,vx,vy)
+    
+    ships = love.graphics.newImage("Ships.png")
     local nx,ny = ships:getDimensions()
     ship = love.graphics.newQuad(191,0,93,96,nx,ny)
+    
     -------------------------------//-------------------------------
     --Trilha
     ntri = 6 -- Numero de trilhas de asteroide
@@ -62,17 +72,34 @@ end
 
 
 function faz_background()
-
     local X,Y = background:getDimensions()
-
     love.graphics.setColor(255,255,255)
-
     love.graphics.draw(background,0,0)
 end
 
+function desenha_hp()
+    love.graphics.setColor(255,255,255)
+    love.graphics.draw(hp,fullhp,20,910)
+    love.graphics.draw(hp,halfhp,70,910)
+    love.graphics.draw(hp,nohp,120,910)
+end
+
+function faz_backgroundmenu()
+    local X,Y = backgroundmenu:getDimensions()
+    love.graphics.setColor(255,255,255)
+    love.graphics.draw(backgroundmenu,0,-100)
+end
+
+function desenha_titulo()
+  menuT:set('asteroide')
+  Mx,My = menuT:getDimensions()
+  
+  love.graphics.setColor(255,255,0)
+  love.graphics.draw(menuT,w/2-Mx/2,200-My/2)
+end
 
 function desenha_menu()
-    menu:set('Aperte "ENTER" ou use o Node para jogar')
+    menu:set('Para jogar aperte "enter"')
     mx,my = menu:getDimensions()
 
     love.graphics.setColor(255,255,0)
@@ -281,19 +308,20 @@ end
 
 
 function love.draw()
-    faz_background()
     if estado=='menu' then
+        faz_backgroundmenu()
+        desenha_titulo()
         desenha_menu()
     end
 
 
 
     if estado=='game' then
-
+        faz_background()
+        desenha_hp()
         desenha_trilha()    
         desenha_elementos()
         desenha_asteroide()
     end
 
 end
-
