@@ -86,32 +86,32 @@ function desenha_hp()
     love.graphics.setColor(255,255,255)
     local hprest = vida
     local hpcoord = 30
-    
+
     if vida>hpmax then
         hpmax = vida
     end
-    
+
     for i=1,math.ceil(hpmax/2) do
-        
+
         if hprest>=2 then
             love.graphics.draw(hp,fullhp,hpcoord,h-80)
-            
+
             hprest = hprest-2
             hpcoord = hpcoord + 55
-        
+
         elseif hprest==1 then
             love.graphics.draw(hp,halfhp,hpcoord,h-80)
-            
+
             hprest = hprest-1
             hpcoord = hpcoord + 55
 
-        
+
         else
             love.graphics.draw(hp,nohp,hpcoord,h-80) -- Desenha corações vazios para representar a vida anterior perdida
-            
+
             hpcoord = hpcoord + 55
         end
-        
+
     end
 end
 
@@ -243,13 +243,14 @@ function posicao_elemento(dt)
         if el.y>h+10 then -- Deleta os elementos que saem da tela
             elementos[key]=nil
         end
+        collision(el,key)
     end
 
     eltimer = eltimer+dt
     local dtempo = eltimer - ultimoel -- Tempo deste o ultimo elemento (s)
 
     local dificuldade = fator/(eltimer+fator/3); -- Equação que determina a dificuldade de acordo com o tempo
-    
+
     if ultimoel==-1 or dtempo>dificuldade then -- Mais elementos conforme o tempo passa
         local tipoel = math.floor(math.random(1,6))
 
@@ -266,7 +267,7 @@ function posicao_elemento(dt)
         local objy = 0
 
 
-        
+
         for el=1,#elementos+1 do
             if not elementos[el] then -- Coloca o elemento no primeiro espaço vazio da tabela
                 elementos[el] = {x=objx,y=objy,tipo=tipoel}
@@ -279,7 +280,6 @@ function posicao_elemento(dt)
 end
 
 function desenha_elementos()
-    print(#elementos)
 
     for _,el in pairs(elementos) do
 
@@ -291,42 +291,39 @@ function desenha_elementos()
 
         if el.tipo==2 then -- Tipo 2=bomba
             bx,by=bomb:getDimensions()
-            
+
             love.graphics.draw(bomb,el.x-bx/2,el.y-by/2)
         end
     end
 
 end
 
-function collision()
+function collision(el,key)
 
-    for key,el in ipairs(elementos) do
-        
-        if el.tipo==1 then
-            local nx,ny=93,96 --Tamanho da nave
-            local _,ad = asteroide:getDimensions() -- Diametro da colisão do asteroide
+    if el.tipo==1 then
+        local nx,ny=93,96 --Tamanho da nave
+        local _,ad = asteroide:getDimensions() -- Diametro da colisão do asteroide
 
-            local dcol = math.sqrt( (asx-(el.x))^2 + (asy-(el.y))^2 )
+        local dcol = math.sqrt( (asx-(el.x))^2 + (asy-(el.y))^2 )
 
-            if dcol <= ad then
-                elementos[key] = nil
+        if dcol <= ad-20 then
+            elementos[key] = nil
+        end
+    end
+    if el.tipo==2 then
+        local bx,by=bomb:getDimensions() --Tamanho da nave
+        local _,ad = asteroide:getDimensions() -- Diametro da colisão do asteroide
+
+        local dcol = math.sqrt( (asx-(el.x))^2 + (asy-(el.y))^2 )
+
+        if dcol <= ad-30 then
+            elementos[key] = nil
+
+            vida = vida-1 -- TODO: Mover isso para o fim da função de explosão(quando ficar pronta)
+            if vida<=0 then
+                --love.load()
             end
-        end
-        if el.tipo==2 then
-            local bx,by=bomb:getDimensions() --Tamanho da nave
-            local _,ad = asteroide:getDimensions() -- Diametro da colisão do asteroide
-
-            local dcol = math.sqrt( (asx-(el.x))^2 + (asy-(el.y))^2 )
-
-            if dcol <= ad-10 then
-                elementos[key] = nil
-                
-                vida = vida-1 -- TODO: Mover isso para o fim da função de explosão(quando ficar pronta)
-                if vida<=0 then
-                    --love.load()
-                end
-            end   
-        end
+        end   
     end
 end
 
@@ -362,7 +359,6 @@ function love.update(dt)
         cria_trilha(dt)
         exec_mov(dt)
         posicao_elemento(dt)
-        collision()
 
     end
 
