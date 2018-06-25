@@ -12,7 +12,7 @@ function love.load()
     menu = love.graphics.newText(menuf,'')
     --Tela
     love.window.setTitle('Projeto Final')
-    love.window.setMode(800,1000)
+    love.window.setMode(800,950)
     love.graphics.setBackgroundColor(0,0,0)
     w,h = love.graphics.getDimensions() -- Dimensões(global)
     -------------------------------//-------------------------------
@@ -55,8 +55,10 @@ function love.load()
     -------------------------------//-------------------------------
     --Defaults
     estado = 'menu' --Jogo começa no menu
+    vida = 3 -- Vida inicial
     starttime = 0 --Inicializa a variavel inicio do jogo
     runtime = 0 -- Tempo desde o inicio do jogo
+    velocidade = 0 -- Velocidade inicial dos elementos
     rot = 0 -- Rotação original
     asx = w*(math.floor(nfaixas/2))/(nfaixas) -- X inicial do asteroide
     asy = 4/5*h -- Y do asteroide
@@ -80,9 +82,15 @@ end
 
 function desenha_hp()
     love.graphics.setColor(255,255,255)
-    love.graphics.draw(hp,fullhp,20,910)
-    love.graphics.draw(hp,halfhp,70,910)
-    love.graphics.draw(hp,nohp,120,910)
+    if vida==3 then
+      love.graphics.draw(hp,fullhp,30,h-80)
+    
+    elseif vida==2 then
+      love.graphics.draw(hp,halfhp,30,h-80)
+      
+    else
+      love.graphics.draw(hp,nohp,30,h-80)
+    end
 end
 
 function faz_backgroundmenu()
@@ -206,9 +214,9 @@ end
 
 
 function posicao_elemento(dt)
-
     for key,el in pairs(elementos) do -- Acessa os elementos existentes
-        el.y = el.y + k*dt + eltimer/10 --Move os elementos existentes
+        velocidade = k*dt + eltimer/10
+        el.y = el.y + velocidade --Move os elementos existentes
 
         if el.y>h+10 then -- Deleta os elementos que saem da tela
             elementos[key]=nil
@@ -218,11 +226,13 @@ function posicao_elemento(dt)
     eltimer = eltimer+dt
     local dtempo = eltimer - ultimoel -- Tempo deste o ultimo elemento (s)
 
-    local dificuldade = 5 - (eltimer/15)
+    local dificuldade = ((-10*eltimer^2 + 3)*velocidade)
+    print(dificuldade)
 
-    if dificuldade<0.1 then
-        dificuldade=0.1
+    if dificuldade<1/30*velocidade then
+        dificuldade=1/30*velocidade
     end
+
     if dtempo>dificuldade or ultimoel==-1 then -- Mais elementos conforme o tempo passa
         local tipoel = math.floor(math.random(1,6))
 
@@ -288,6 +298,10 @@ function collision()
             local dcol = math.sqrt( (asx-(el.x))^2 + (asy-(el.y))^2 )
 
             if dcol <= ad then
+                vida = vida-1
+                if vida<=0 then
+                  --love.load()
+                end
                 elementos[key] = nil
             end   
         end
