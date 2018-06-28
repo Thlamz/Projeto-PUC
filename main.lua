@@ -11,6 +11,8 @@ function love.load()
     menuf = love.graphics.newFont('BLADRMF_.TTF',30)
     menuT = love.graphics.newText(titulo,'')
     menu = love.graphics.newText(menuf,'')
+    pontuacaotxt = love.graphics.newText(menuf,'pontos:')
+    pontuacao = love.graphics.newText(menuf,pont)
     --Tela
     love.window.setTitle('Projeto Final')
     love.window.setMode(800,950)
@@ -66,6 +68,7 @@ function love.load()
     asx = w*(math.floor(nfaixas/2))/(nfaixas) -- X inicial do asteroide
     asy = 4/5*h -- Y do asteroide
     k = 300 -- Constante de movimentação
+    pont = '0' -- Pontuação inicial
     math.randomseed(os.time())
     -------------------------------//------------------------------
 end
@@ -309,6 +312,8 @@ function collision(el,key)
 
         if dcol <= ad-20 then
             elementos[key] = nil
+            
+            pont = pont+50
         end
     end
     if el.tipo==2 then
@@ -322,7 +327,7 @@ function collision(el,key)
 
             vida = vida-1 -- TODO: Mover isso para o fim da função de explosão(quando ficar pronta)
             if vida<=0 then
-                --love.load()
+                love.load()
             end
         end   
     end
@@ -365,18 +370,30 @@ function love.update(dt)
 
 end
 
+function exibe_pontuacao()
+
+    pontuacaotxt = love.graphics.newText(menuf,'pontos:')
+    pontuacao = love.graphics.newText(menuf,pont)
+    
+    ptx,pty = pontuacaotxt:getDimensions()
+    px,py = pontuacao:getDimensions()
+    
+    love.graphics.setColor(255,255,0)
+    love.graphics.draw(pontuacaotxt,w-ptx-110,h-pty-30)
+    love.graphics.draw(pontuacao,w-px-10,h-py-30)
+end
 
 function love.draw()
+  
     if estado=='menu' then
         faz_backgroundmenu()
         desenha_titulo()
         desenha_menu()
     end
 
-
-
     if estado=='game' then
         faz_background()
+        exibe_pontuacao()
         desenha_hp()
         desenha_trilha()    
         desenha_elementos()
