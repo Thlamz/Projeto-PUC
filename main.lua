@@ -1,4 +1,5 @@
 msgr = require('mqttLoveLibrary')
+high = require('highscore')
 
 
 function love.load()
