@@ -247,7 +247,10 @@ function posicao_elemento(dt)
         if el.y>h+10 then -- Deleta os elementos que saem da tela
             elementos[key]=nil
         end
-        collision(el,key)
+
+        if el.y > asy - el.dy then -- Conserva recurss so chamando a colisao quando o objeto esta proximo
+            collision(el,key)
+        end
     end
 
     eltimer = eltimer+dt
@@ -259,8 +262,10 @@ function posicao_elemento(dt)
         local tipoel = math.floor(math.random(1,6))
 
         if tipoel>1 then
+            dx,dy=93,96
             tipoel = 1
         else
+            dx,dy = bomb:getDimensions()
             tipoel = 2
         end
 
@@ -274,7 +279,7 @@ function posicao_elemento(dt)
 
         for el=1,#elementos+1 do
             if not elementos[el] then -- Coloca o elemento no primeiro espaço vazio da tabela
-                elementos[el] = {x=objx,y=objy,tipo=tipoel}
+                elementos[el] = {x=objx,y=objy,tipo=tipoel,dx=dx,dy=dy}
             end
         end
 
@@ -288,36 +293,34 @@ function desenha_elementos()
     for _,el in pairs(elementos) do
 
         if el.tipo==1 then
-            nx,ny=ships:getDimensions()
-
-            love.graphics.draw(ships,ship,el.x-(93/2),el.y-(96/2))
+            love.graphics.draw(ships,ship,el.x-(el.dx/2),el.y-(el.dy/2))
         end
 
         if el.tipo==2 then -- Tipo 2=bomba
-            bx,by=bomb:getDimensions()
-
-            love.graphics.draw(bomb,el.x-bx/2,el.y-by/2)
+            love.graphics.draw(bomb,el.x-el.dx/2,el.y-el.dy/2)
         end
     end
 
 end
 
 function collision(el,key)
+    local _,ad = asteroide:getDimensions() -- Diametro da colisão do asteroide
 
     if el.tipo==1 then
-        local nx,ny=93,96 --Tamanho da nave
+
         local _,ad = asteroide:getDimensions() -- Diametro da colisão do asteroide
 
         local dcol = math.sqrt( (asx-(el.x))^2 + (asy-(el.y))^2 )
 
         if dcol <= ad-20 then
             elementos[key] = nil
-            
+
             pont = pont+50
         end
     end
+
     if el.tipo==2 then
-        local bx,by=bomb:getDimensions() --Tamanho da nave
+
         local _,ad = asteroide:getDimensions() -- Diametro da colisão do asteroide
 
         local dcol = math.sqrt( (asx-(el.x))^2 + (asy-(el.y))^2 )
@@ -329,7 +332,7 @@ function collision(el,key)
             if vida<=0 then
                 love.load()
             end
-        end   
+        end  
     end
 end
 
@@ -356,11 +359,11 @@ end
 
 
 function love.update(dt)
-    rot = rot + dt*math.pi/5 -- Rotaciona o asteroide a cada update
 
     msgr.checkMessages()
 
     if estado=='game' then
+        rot = rot + dt*math.pi/5 -- Rotaciona o asteroide a cada update
         tempo_de_jogo()
         cria_trilha(dt)
         exec_mov(dt)
@@ -374,17 +377,17 @@ function exibe_pontuacao()
 
     pontuacaotxt = love.graphics.newText(menuf,'pontos:')
     pontuacao = love.graphics.newText(menuf,pont)
-    
+
     ptx,pty = pontuacaotxt:getDimensions()
     px,py = pontuacao:getDimensions()
-    
+
     love.graphics.setColor(255,255,0)
     love.graphics.draw(pontuacaotxt,w-ptx-110,h-pty-30)
     love.graphics.draw(pontuacao,w-px-10,h-py-30)
 end
 
 function love.draw()
-  
+
     if estado=='menu' then
         faz_backgroundmenu()
         desenha_titulo()
