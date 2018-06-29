@@ -51,11 +51,20 @@ function highscore.append(n,s) -- n = nome, s = score ; Adicina score no final d
 end
 
 function highscore.string() -- Retorna uma string contendo todas as linhas do txt
-    arq = io.open('highscore.txt')
+    tabela = highscore.read()
+    max = 10
     
-    string = arq:read('*a')
-    arq:close()
+    if max<#tabela then
+        max = #tabela
+    end
+    
+    string = ''
+    for i=1,max do
+        string = string..string.format('%-15s %10d',tabela[i][1],tabela[i][2])..'\n'
+    end
+    
     return string
 end
+print(highscore.string())
 
 return highscore
