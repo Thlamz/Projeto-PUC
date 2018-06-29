@@ -207,12 +207,12 @@ end
 
 function exec_mov(dt) -- Executa movimento
 
-    if asx>(nfaixas-1)*w/nfaixas and mov==1 then --Impede que saia da tela pela direita
+    if math.abs(asx - (nfaixas-1)*w/nfaixas) <= 30 and mov==1 then --Impede que saia da tela pela direita
         mov = 0
         dist = 0
     end
 
-    if asx<w/nfaixas and mov==-1 then --Impede que saia da tela pela esquerda
+    if math.abs(asx-w/nfaixas) <= 30 and mov==-1 then --Impede que saia da tela pela esquerda
         mov = 0
         dist = 0
     end
@@ -324,11 +324,30 @@ function collision(el,key)
 
             vida = vida-1 -- TODO: Mover isso para o fim da função de explosão(quando ficar pronta)
             if vida<=0 then
-                love.load()
+                estado = 'end'
+
+                highscore.append(minhamat,pont) -- Adiciona e ordena seu nome às scores
+                highscore.order()
             end
         end  
     end
 end
+
+
+function desenha_hghscore()
+
+    local scores = highscore.string()
+    
+    love.graphics.setColor(255,255,0)
+    menu:set(scores)
+    
+    local dx,dy = menu:getDimensions()
+    
+    love.graphics.draw(menu,w/2 - (dy/2),h/8)
+    
+end
+    
+
 
 
 function love.keypressed(key)
@@ -347,6 +366,10 @@ function love.keypressed(key)
         elseif key=='d' or key=='right' then
             mov=1
         end
+    end
+    
+    if estado=='end' then
+        love.load()
     end
 end
 
@@ -396,4 +419,9 @@ function love.draw()
         desenha_asteroide()
     end
 
+    if estado=='end' then
+        faz_backgroundmenu()
+        desenha_hghscore()
+    end
+    
 end

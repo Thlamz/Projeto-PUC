@@ -54,6 +54,7 @@ function highscore.string() -- Retorna uma string contendo todas as linhas do tx
     arq = io.open('highscore.txt')
     
     string = arq:read('*a')
+    arq:close()
     return string
 end
 
