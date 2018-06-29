@@ -217,19 +217,14 @@ function exec_mov(dt) -- Executa movimento
         dist = 0
     end
 
-    if math.abs(asx - w*(math.floor(nfaixas/2))/(nfaixas))<50 and mov==0 then --Centraliza o asteroide para compensar pequenos erros
-        asx = w*(math.floor(nfaixas/2))/(nfaixas)
-    end
 
-
-    dist = dist + (1/nfaixas*w)*dt*vmov*math.abs(mov) -- Essa formulas garante velocidade fixa independente da velocidade do computador
+    dist = dist + (1/nfaixas*w)*dt*vmov*math.abs(mov) -- Essa formula garante velocidade fixa independente da velocidade do computador
 
     asx = asx + (1/nfaixas*w)*dt*vmov*mov
 
 
     for i=1,nfaixas-1 do
-        if (mov ~= 0) and (math.abs(asx - i*w/nfaixas) <= 30) and (dist>=(1/nfaixas)*w) then
-            print('reset',i,w/asx,asx - i*w/nfaixas,dist)
+        if (mov ~= 0) and (math.abs(asx - i*w/nfaixas) <= 30) and (dist>=30) then -- Para o movimento do asteroide quando ele chega a uma faixa
             asx = i*w/nfaixas
             dist = 0
             mov = 0
