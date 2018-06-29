@@ -2,7 +2,7 @@ msgr = require('mqttLoveLibrary')
 
 
 function love.load()
-    minhamat = '1810981' -- Sua matricula
+    minhamat = '181098' -- Sua matricula
 
 
     --Textos
@@ -20,7 +20,7 @@ function love.load()
     msgr.start(minhamat,minhamat,coord_mov) -- Ao receber mensagem executa a função coord_mov
     vmov= 5 -- Velocidade da movimentação
     nfaixas = 3 -- Número de faixas na movimentação
-    mov = '' --Estado inicial da movimentação
+    mov = 0 --Estado inicial da movimentação
     dist = 0 -- Variavel auxiliar "distância", para a movimentação
     nfaixas = nfaixas+1 --Não alterar(ajusta para o número real de faixas)
     -------------------------------//------------------------------
@@ -192,45 +192,44 @@ function coord_mov(msg) -- coordena a movimentação
     if mat==minhamat then
 
         if inst=='esq' then
-            mov = 'esq'
+            mov = -1
         end
 
         if inst=='dir' then
-            mov = 'dir'
+            mov = 1
         end
     end
 end
 
 function exec_mov(dt) -- Executa movimento
 
-    if asx>(nfaixas-1)*w/nfaixas and mov=='dir' then --Impede que saia da tela pela direita
-        mov = ''
+    if asx>(nfaixas-1)*w/nfaixas and mov==1 then --Impede que saia da tela pela direita
+        mov = 0
+        dist = 0
     end
 
-    if asx<w/nfaixas and mov=='esq' then --Impede que saia da tela pela esquerda
-        mov = ''
+    if asx<w/nfaixas and mov==-1 then --Impede que saia da tela pela esquerda
+        mov = 0
+        dist = 0
     end
 
-    if math.abs(asx - w*(math.floor(nfaixas/2))/(nfaixas))<50 and dist==0 then --Centraliza o asteroide para compensar pequenos erros
+    if math.abs(asx - w*(math.floor(nfaixas/2))/(nfaixas))<50 and mov==0 then --Centraliza o asteroide para compensar pequenos erros
         asx = w*(math.floor(nfaixas/2))/(nfaixas)
     end
 
 
-    if mov=='esq' then
-        dist = dist + (1/nfaixas*w)*dt*vmov -- Essa formulas garante velocidade fixa independente da velocidade do computador
+    dist = dist + (1/nfaixas*w)*dt*vmov*math.abs(mov) -- Essa formulas garante velocidade fixa independente da velocidade do computador
 
-        asx = asx - (1/nfaixas*w)*dt*vmov
+    asx = asx + (1/nfaixas*w)*dt*vmov*mov
 
-    elseif mov=='dir' then
-        dist = dist + (1/nfaixas*w)*dt*vmov
-        asx = asx + (1/nfaixas*w)*dt*vmov
 
-    else
-        dist = 0
-    end
-
-    if dist >= 1/nfaixas*w then
-        mov = ''
+    for i=1,nfaixas-1 do
+        if (mov ~= 0) and (math.abs(asx - i*w/nfaixas) <= 30) and (dist>=(1/nfaixas)*w) then
+            print('reset',i,w/asx,asx - i*w/nfaixas,dist)
+            asx = i*w/nfaixas
+            dist = 0
+            mov = 0
+        end
     end
 end
 
@@ -337,13 +336,12 @@ function love.keypressed(key)
 
 
     if estado=='game' then
-        if mov=='' then
-            if key=='a' or key=='left' then
-                mov='esq'
 
-            elseif key=='d' or key=='right' then
-                mov='dir'
-            end
+        if key=='a' or key=='left' then
+            mov=-1
+
+        elseif key=='d' or key=='right' then
+            mov=1
         end
     end
 end
