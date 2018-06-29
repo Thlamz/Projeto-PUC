@@ -3,7 +3,7 @@ high = require('highscore')
 
 
 function love.load()
-    minhamat = '181098' -- Sua matricula
+    minhamat = '1810981' -- Sua matricula
 
 
     --Textos
