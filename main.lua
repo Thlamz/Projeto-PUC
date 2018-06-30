@@ -32,6 +32,15 @@ function love.load()
     background = love.graphics.newImage("BKG.png")
     backgroundmenu = love.graphics.newImage("BKGM.png")
     bomb = love.graphics.newImage('bomb.png')
+    
+    exp1 = love.graphics.newImage('exp1.png')
+    exp2 = love.graphics.newImage('exp2.png')
+    exp3 = love.graphics.newImage('exp3.png')
+    exp4 = love.graphics.newImage('exp4.png')
+    exp5 = love.graphics.newImage('exp5.png')
+    exp6 = love.graphics.newImage('exp6.png')
+    exp7 = love.graphics.newImage('exp7.png')
+    exp8 = love.graphics.newImage('exp8.png')
 
     ships = love.graphics.newImage("Ships.png")
     local nx,ny = ships:getDimensions()
@@ -71,6 +80,16 @@ function love.load()
     pont = '0' -- Pontuação inicial
     math.randomseed(os.time())
     -------------------------------//------------------------------
+end
+
+function faz_explosao()
+    love.graphics.setColor(255,255,255)
+    love.graphics.draw(exp1,0,0)
+    love.graphics.draw(exp2,0,200)
+    love.graphics.draw(exp3,0,400)
+    love.graphics.draw(exp4,0,600)
+    love.graphics.draw(exp5,200,0)
+    love.graphics.draw(exp6,400,0)
 end
 
 
@@ -343,7 +362,7 @@ function desenha_hghscore()
     
     local dx,dy = menu:getDimensions()
     
-    love.graphics.draw(menu,w/2 - (dy/2),h/8)
+    love.graphics.draw(menu,w/2,h/8)
     
 end
     
@@ -412,6 +431,7 @@ function love.draw()
 
     if estado=='game' then
         faz_background()
+        faz_explosao()
         exibe_pontuacao()
         desenha_hp()
         desenha_trilha()    
