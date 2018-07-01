@@ -3,7 +3,7 @@ high = require('highscore')
 
 
 function love.load()
-    minhamat = '1810981' -- Sua matricula
+    minhamat = '181098' -- Sua matricula
 
 
     teste = true
@@ -323,7 +323,7 @@ function posicao_elemento(dt)
         velocidade = k*dt + eltimer/10
         el.y = el.y + velocidade --Move os elementos existentes
 
-        if el.y>h+10 then -- Deleta os elementos que saem da tela
+        if el.y>h then -- Deleta os elementos que saem da tela
             elementos[key]=nil
         end
 
@@ -481,23 +481,22 @@ function robo()
     local perigo = false
     
     for _,el in pairs(elementos) do
-        if el.tipo==2 then
+        if el.tipo==2 and el.y<asy + ad/2 then
             bombas[#bombas+1] = el
         end
     end
     table.sort(bombas,function(a,b) return a.y>b.y end) 
-
     if #bombas>0 then
         for i=1,#bombas do
             local deltax = math.abs(bombas[i].x - asx)
 
-            local deltay = math.abs(bombas[i].y - asy)
+            local deltay = asy - bombas[i].y
             
-            if deltay<1/4*h then
+            if deltay<3/4*h then
                 perigo=true
             end
 
-            if deltax <= 10 and deltay <= ad+10+velocidade and deltay>-ad/2 then
+            if deltax <= 10 and deltay <= ad+10+velocidade then
 
 
                 if asx-(1/nfaixas)*w<=10 then
@@ -507,21 +506,24 @@ function robo()
                     mov = -1
                     
                 else
+                    
+                    local decisao=false
                     for a=1,#bombas do
-                        local decisao=false
-                        if bombas[a].x-asx>10 then
+                        if bombas[a].x>w/2 then
                             mov = -1
 
                             decisao=true
                             break
-                        elseif asx-bombas[a].x>10 then
+                            
+                        elseif bombas[a].x<w/2 then
                             mov = 1
-
+                            print('direita')
+                            
                             decisao=true
                             break
                         end
                     end
-                    if not decisao then 
+                    if decisao==false then 
 
                         mov = -1
                     end
@@ -531,6 +533,7 @@ function robo()
 
         end
     end
+    
     if perigo==false then
         centraliza()
     end
