@@ -7,7 +7,7 @@ function love.load()
 
 
     --Textos
-    titulo = love.graphics.newFont('BLADRMF_.TTF',60)
+    titulo = love.graphics.newFont('BLADRMF_.TTF',75)
     menuf = love.graphics.newFont('BLADRMF_.TTF',30)
     menuT = love.graphics.newText(titulo,'')
     menu = love.graphics.newText(menuf,'')
@@ -207,11 +207,16 @@ function desenha_titulo()
 end
 
 function desenha_menu()
-    menu:set('Para jogar aperte "enter"')
+    menu:set('jogar = "enter"')
     mx,my = menu:getDimensions()
 
     love.graphics.setColor(255,255,0)
-    love.graphics.draw(menu,w/2-mx/2,h/2-my/2)
+    love.graphics.draw(menu,w/2-mx/2,h/2-my*2)
+    
+    menu:set('records = "r"')
+    mx,my = menu:getDimensions()
+    
+    love.graphics.draw(menu,w/2-mx/2,h/2+my*5)
 end
 
 
@@ -223,7 +228,7 @@ function desenha_asteroide()
     love.graphics.draw(asteroide,asx,4/5*h,rot,1,1,ax/2,ay/2)
 
 
-    love.graphics.circle('line',asx,asy,ay/2)
+    --love.graphics.circle('line',asx,asy,ay/2)
 end
 
 
@@ -403,26 +408,54 @@ end
 
 
 function desenha_hghscore()
-
-    local scores = highscore.string()
-
+  
     love.graphics.setColor(255,255,0)
-    menu:set(scores)
+    
+    local user = highscore.user()
+    
+    menu:set(user)
+    local dx,dy = menu:getDimensions() -- dx = 150, dy = 340
 
-    local dx,dy = menu:getDimensions()
-
-    love.graphics.draw(menu,w/2,h/8)
-
+    love.graphics.draw(menu,w/2-200,300)
+    
+    local score = highscore.score()
+    
+    menu:set(score)
+    
+    love.graphics.draw(menu,w/2+100,300)
 end
 
+function desenha_tituloHS()
+  
+    menuT:set('top scores')
+    tx,ty = menuT:getDimensions()
 
+    love.graphics.setColor(255,255,0)
+    love.graphics.draw(menuT,w/2-tx/2,100)
+end
+
+function aviso_menu()
+  
+    menu:set('para retornar ao menu aperte "enter"')
+    tx,ty = menu:getDimensions()
+    
+    love.graphics.setColor(255,255,0)
+    love.graphics.draw(menu,w/2-tx/2,h-ty*2)
+end
 
 
 function love.keypressed(key)
 
-    if key=='return' and estado=='menu' then
-        estado='game' -- Inicia jogo
-        starttime=os.time() -- Tempo de inicio do jogo
+    if estado=='menu' then
+      
+        if key=='return' then
+            estado='game' -- Inicia jogo
+            starttime=os.time() -- Tempo de inicio do jogo
+          end
+          
+        if key=='r' then
+            estado='end'
+          end
     end
 
 
@@ -437,7 +470,9 @@ function love.keypressed(key)
     end
 
     if estado=='end' then
+      if key == 'return' then
         love.load()
+      end
     end
 end
 
@@ -490,8 +525,10 @@ function love.draw()
     end
 
     if estado=='end' then
-        faz_backgroundmenu()
+        faz_background()
+        desenha_tituloHS()
         desenha_hghscore()
+        aviso_menu()
     end
 
 end

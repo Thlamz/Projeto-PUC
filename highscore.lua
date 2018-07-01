@@ -50,20 +50,30 @@ function highscore.append(n,s) -- n = nome, s = score ; Adicina score no final d
     arq:close()
 end
 
-function highscore.string() -- Retorna uma string contendo todas as linhas do txt
-    tabela = highscore.read()
-    max = 10
-    
-    if max<#tabela then
-        max = #tabela
-    end
-    
-    string = ''
-    for i=1,max do
-        string = string..string.format('%-15s %10d',tabela[i][1],tabela[i][2])..'\n'
-    end
-    
-    return string
+function highscore.user()
+  
+  table = highscore.read()
+  
+  string = ''
+  
+  for i = 1,15 do
+    string = string..table[i][1]..'\n'
+  end
+  
+  return string
+end
+
+function highscore.score()
+  
+  table = highscore.read()
+  
+  string = ''
+  
+  for i = 1,15 do
+    string = string..table[i][2]..'\n'
+  end
+  
+  return string
 end
 
 return highscore
