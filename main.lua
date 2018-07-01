@@ -6,7 +6,7 @@ function love.load()
     minhamat = '181098' -- Sua matricula
 
 
-    teste = true
+    teste = true -- Modo de teste
 
     --Textos
     titulo = love.graphics.newFont('BLADRMF_.TTF',75)
@@ -485,8 +485,9 @@ function robo()
             bombas[#bombas+1] = el
         end
     end
-    table.sort(bombas,function(a,b) return a.y>b.y end) 
+    
     if #bombas>0 then
+        table.sort(bombas,function(a,b) return a.y>b.y end) 
         for i=1,#bombas do
             local deltax = math.abs(bombas[i].x - asx)
 
