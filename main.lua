@@ -6,7 +6,7 @@ function love.load()
     minhamat = '181098' -- Sua matricula
 
 
-    teste = true -- Modo de teste
+    teste = false -- Modo de teste
 
     --Textos
     titulo = love.graphics.newFont('BLADRMF_.TTF',75)
@@ -22,7 +22,7 @@ function love.load()
     w,h = love.graphics.getDimensions() -- Dimensões(global)
     -------------------------------//-------------------------------
     --Movimentação
-    msgr.start(minhamat,minhamat,coord_mov) -- Ao receber mensagem executa a função coord_mov
+    msgr.start(minhamat,'asteroide',coord_mov) -- Ao receber mensagem executa a função coord_mov
     vmov= 5 -- Velocidade da movimentação
     nfaixas = 3 -- Número de faixas na movimentação
     mov = 0 --Estado inicial da movimentação
@@ -275,17 +275,16 @@ function coord_mov(msg) -- coordena a movimentação
     estado='game'
 
 
-    local _,_,inst,mat=string.find(msg,'(%a+)(%d+)')
+    local _,_,inst=string.find(msg,'(%w+)')
+    print(inst)
     print('mensagem recebida')
-    if mat==minhamat then
 
-        if inst=='esq' then
-            mov = -1
-        end
+    if inst=='esq' then
+        mov = -1
+    end
 
-        if inst=='dir' then
-            mov = 1
-        end
+    if inst=='dir' then
+        mov = 1
     end
 end
 

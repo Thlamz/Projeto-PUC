@@ -12,7 +12,7 @@ local tdif = 500000
 
 
 function mesq()
-    msgr.sendMessage("esq",minhamat)  
+    msgr.sendMessage("esq",'asteroide')  
     
     gpio.trig(sw1)
     gpio.trig(sw2)
@@ -27,7 +27,7 @@ function mesq()
 end
 
 function mdir()
-    msgr.sendMessage("dir",minhamat)
+    msgr.sendMessage("dir",'asteroide')
     
     gpio.trig(sw1)
     gpio.trig(sw2)
