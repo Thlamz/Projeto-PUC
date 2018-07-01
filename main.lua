@@ -3,7 +3,7 @@ high = require('highscore')
 
 
 function love.load()
-    minhamat = '181098' -- Sua matricula
+    minhamat = '1810981' -- Sua matricula
 
 
     teste = false -- Modo de teste
@@ -83,7 +83,6 @@ function love.load()
     estado = 'menu' --Jogo começa no menu
     starttime = 0 --Inicializa a variavel inicio do jogo
     delta = 0 -- Espaço entre updates
-    runtime = 0 -- Tempo desde o inicio do jogo
     rot = 0 -- Rotação original
     asx = w*(math.floor(nfaixas/2))/(nfaixas) -- X inicial do asteroide
     asy = 4/5*h -- Y do asteroide
@@ -137,12 +136,6 @@ function faz_explosao()
 
         end
     end
-end
-
-
-function tempo_de_jogo()
-    tempo = os.time()
-    runtime = tempo - starttime
 end
 
 
@@ -326,7 +319,7 @@ function posicao_elemento(dt)
             elementos[key]=nil
         end
 
-        if el.y > asy - el.dy then -- Conserva recurss so chamando a colisao quando o objeto esta proximo
+        if el.y > asy - el.dy then -- Conserva recursos so chamando a colisao quando o objeto esta proximo
             collision(el,key)
         end
     end
