@@ -12,5 +12,6 @@ lamenza 660
 lamenza 640
 thiago 580
 rodrigo 440
+1810981 360
 rodrigo 320
 rodrigo 320

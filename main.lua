@@ -495,10 +495,8 @@ function love.update(dt)
 end
 
 function exibe_pontuacao()
-
-    pontuacaotxt = love.graphics.newText(menuf,'pontos:')
-    pontuacao = love.graphics.newText(menuf,pont)
-
+    pontuacao:set(pont)
+    
     ptx,pty = pontuacaotxt:getDimensions()
     px,py = pontuacao:getDimensions()
 
