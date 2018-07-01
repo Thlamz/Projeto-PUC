@@ -125,12 +125,12 @@ function faz_explosao()
 
         love.graphics.draw(spexp[el.s],el.x-dx/2,el.y-dy/2)
 
-        if el.t>=0.1 then
+        if el.t>=0.1 then -- Incrementa sprite com 0.1s de delay
             el.t = 0
             el.s = el.s+1
         end
 
-        if el.s>8 then
+        if el.s>8 then -- Deleta explosão após a ultima sprite
 
             exp[key] = nil
 
@@ -487,7 +487,6 @@ function love.draw()
         desenha_trilha()    
         desenha_elementos()
         desenha_asteroide()
-        faz_explosao()
     end
 
     if estado=='end' then
