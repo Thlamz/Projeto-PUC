@@ -65,6 +65,5 @@ function highscore.string() -- Retorna uma string contendo todas as linhas do tx
     
     return string
 end
-print(highscore.string())
 
 return highscore

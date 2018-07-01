@@ -32,19 +32,28 @@ function love.load()
     background = love.graphics.newImage("BKG.png")
     backgroundmenu = love.graphics.newImage("BKGM.png")
     bomb = love.graphics.newImage('bomb.png')
-    
-    exp1 = love.graphics.newImage('exp1.png')
-    exp2 = love.graphics.newImage('exp2.png')
-    exp3 = love.graphics.newImage('exp3.png')
-    exp4 = love.graphics.newImage('exp4.png')
-    exp5 = love.graphics.newImage('exp5.png')
-    exp6 = love.graphics.newImage('exp6.png')
-    exp7 = love.graphics.newImage('exp7.png')
-    exp8 = love.graphics.newImage('exp8.png')
-
     ships = love.graphics.newImage("Ships.png")
     local nx,ny = ships:getDimensions()
     ship = love.graphics.newQuad(191,0,93,96,nx,ny)
+    -------------------------------//-------------------------------
+    --Explosão
+    exp = {} -- Explosões atuais
+
+    spexp  = {} -- Sprites da explosão
+    spexp[1] = love.graphics.newImage('exp1.png')
+    spexp[2] = love.graphics.newImage('exp2.png')
+    spexp[3] = love.graphics.newImage('exp3.png')
+    spexp[4] = love.graphics.newImage('exp4.png')
+    spexp[5] = love.graphics.newImage('exp5.png')
+    spexp[6] = love.graphics.newImage('exp6.png')
+    spexp[7] = love.graphics.newImage('exp7.png')
+    spexp[8] = love.graphics.newImage('exp8.png')
+
+    expx = nil -- Coordenadas da chamada da explosão
+    expy = nil
+    extipo = nil
+
+
     -------------------------------//-------------------------------
     --HP
     hp = love.graphics.newImage("HP.png")
@@ -72,6 +81,7 @@ function love.load()
     --Defaults
     estado = 'menu' --Jogo começa no menu
     starttime = 0 --Inicializa a variavel inicio do jogo
+    delta = 0 -- Espaço entre updates
     runtime = 0 -- Tempo desde o inicio do jogo
     rot = 0 -- Rotação original
     asx = w*(math.floor(nfaixas/2))/(nfaixas) -- X inicial do asteroide
@@ -83,13 +93,48 @@ function love.load()
 end
 
 function faz_explosao()
-    love.graphics.setColor(255,255,255)
-    love.graphics.draw(exp1,0,0)
-    love.graphics.draw(exp2,0,200)
-    love.graphics.draw(exp3,0,400)
-    love.graphics.draw(exp4,0,600)
-    love.graphics.draw(exp5,200,0)
-    love.graphics.draw(exp6,400,0)
+    if expx and expy then
+        local x,y,modo = expx,expy,extipo
+        expx,expy,extipo = nil,nil,nil
+
+        if #exp==0 then
+            exp[1] = {x=x,y=y,s=1,t=0,modo=modo}
+        end
+
+        for i=1,#exp+1 do
+            if not exp[i] then
+                exp[i] = {x=x,y=y,s=1,t=0}
+
+            end
+        end
+    end
+
+    for key,el in pairs(exp) do
+
+        el.t = el.t+delta
+
+
+        local dx,dy = spexp[el.s]:getDimensions()
+
+        love.graphics.draw(spexp[el.s],el.x-dx/2,el.y-dy/2)
+
+        if el.t>=0.1 then
+            el.t = 0
+            el.s = el.s+1
+        end
+
+        if el.s>8 then
+            if el.modo==1 then
+                pont = pont+20
+
+            elseif el.modo==2 then
+                vida = vida-1
+            end
+
+            exp[key] = nil
+
+        end
+    end
 end
 
 
@@ -136,6 +181,14 @@ function desenha_hp()
         end
 
     end
+
+    if vida<=0 then
+        estado = 'end'
+
+        highscore.append(minhamat,pont) -- Adiciona e ordena seu nome às scores
+        highscore.order()
+    end
+
 end
 
 function faz_backgroundmenu()
@@ -328,7 +381,7 @@ function collision(el,key)
         if dcol <= ad-20 then
             elementos[key] = nil
 
-            pont = pont+50
+            expx,expy,extipo = el.x,el.y,el.tipo
         end
     end
 
@@ -341,13 +394,8 @@ function collision(el,key)
         if dcol <= ad-30 then
             elementos[key] = nil
 
-            vida = vida-1 -- TODO: Mover isso para o fim da função de explosão(quando ficar pronta)
-            if vida<=0 then
-                estado = 'end'
+            expx,expy,extipo = el.x,el.y,el.tipo
 
-                highscore.append(minhamat,pont) -- Adiciona e ordena seu nome às scores
-                highscore.order()
-            end
         end  
     end
 end
@@ -356,16 +404,16 @@ end
 function desenha_hghscore()
 
     local scores = highscore.string()
-    
+
     love.graphics.setColor(255,255,0)
     menu:set(scores)
-    
+
     local dx,dy = menu:getDimensions()
-    
+
     love.graphics.draw(menu,w/2,h/8)
-    
+
 end
-    
+
 
 
 
@@ -386,7 +434,7 @@ function love.keypressed(key)
             mov=1
         end
     end
-    
+
     if estado=='end' then
         love.load()
     end
@@ -395,6 +443,7 @@ end
 
 function love.update(dt)
 
+    delta = dt
     msgr.checkMessages()
 
     if estado=='game' then
@@ -437,11 +486,12 @@ function love.draw()
         desenha_trilha()    
         desenha_elementos()
         desenha_asteroide()
+        faz_explosao()
     end
 
     if estado=='end' then
         faz_backgroundmenu()
         desenha_hghscore()
     end
-    
+
 end
