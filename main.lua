@@ -6,6 +6,8 @@ function love.load()
     minhamat = '1810981' -- Sua matricula
 
 
+    teste = true
+
     --Textos
     titulo = love.graphics.newFont('BLADRMF_.TTF',75)
     menuf = love.graphics.newFont('BLADRMF_.TTF',30)
@@ -15,7 +17,7 @@ function love.load()
     pontuacao = love.graphics.newText(menuf,pont)
     --Tela
     love.window.setTitle('Projeto Final')
-    love.window.setMode(800,950)
+    love.window.setMode(800,1000)
     love.graphics.setBackgroundColor(0,0,0)
     w,h = love.graphics.getDimensions() -- Dimensões(global)
     -------------------------------//-------------------------------
@@ -52,8 +54,6 @@ function love.load()
     expx = nil -- Coordenadas da chamada da explosão
     expy = nil
     extipo = nil
-
-
     -------------------------------//-------------------------------
     --HP
     hp = love.graphics.newImage("HP.png")
@@ -77,6 +77,7 @@ function love.load()
     elementos = {} -- Elementos existentes
     velocidade = 0 -- Velocidade inicial dos elementos
     fator = 15 -- Quanto menor mais difícil
+    nbomba = 0 -- Quantidade de bombas seguidas
     -------------------------------//-------------------------------
     --Defaults
     estado = 'menu' --Jogo começa no menu
@@ -96,7 +97,7 @@ function faz_explosao()
     if expx and expy then
         local x,y,modo = expx,expy,extipo
         expx,expy,extipo = nil,nil,nil
-        
+
         if modo==1 then
             pont = pont+20
 
@@ -151,6 +152,7 @@ function faz_background()
     love.graphics.draw(background,0,0)
 end
 
+
 function desenha_hp()
     love.graphics.setColor(255,255,255)
     local hprest = vida
@@ -184,20 +186,24 @@ function desenha_hp()
     end
 
     if vida<=0 then
-
+        if teste==true then
+            minhamat = 'robo'
+        end
         highscore.append(minhamat,pont) -- Adiciona e ordena seu nome às scores
         highscore.order()
-        
+
         love.load()
     end
 
 end
+
 
 function faz_backgroundmenu()
     local X,Y = backgroundmenu:getDimensions()
     love.graphics.setColor(255,255,255)
     love.graphics.draw(backgroundmenu,0,-100)
 end
+
 
 function desenha_titulo()
     menuT:set('asteroide')
@@ -207,16 +213,17 @@ function desenha_titulo()
     love.graphics.draw(menuT,w/2-Mx/2,200-My/2)
 end
 
+
 function desenha_menu()
     menu:set('jogar = "enter"')
     mx,my = menu:getDimensions()
 
     love.graphics.setColor(255,255,0)
     love.graphics.draw(menu,w/2-mx/2,h/2-my*2)
-    
+
     menu:set('records = "r"')
     mx,my = menu:getDimensions()
-    
+
     love.graphics.draw(menu,w/2-mx/2,h/2+my*5)
 end
 
@@ -228,8 +235,6 @@ function desenha_asteroide()
     love.graphics.setColor(255,255,255)
     love.graphics.draw(asteroide,asx,4/5*h,rot,1,1,ax/2,ay/2)
 
-
-    --love.graphics.circle('line',asx,asy,ay/2)
 end
 
 
@@ -284,6 +289,7 @@ function coord_mov(msg) -- coordena a movimentação
     end
 end
 
+
 function exec_mov(dt) -- Executa movimento
 
     if math.abs(asx - (nfaixas-1)*w/nfaixas) <= 30 and mov==1 then --Impede que saia da tela pela direita
@@ -325,7 +331,6 @@ function posicao_elemento(dt)
             collision(el,key)
         end
     end
-
     eltimer = eltimer+dt
     local dtempo = eltimer - ultimoel -- Tempo deste o ultimo elemento (s)
 
@@ -333,13 +338,20 @@ function posicao_elemento(dt)
 
     if ultimoel==-1 or dtempo>dificuldade then -- Mais elementos conforme o tempo passa
         local tipoel = math.floor(math.random(1,6))
-
+        
+        if nbomba>=2 then
+            tipoel=2
+        end
+        
         if tipoel>1 then
             dx,dy=93,96
             tipoel = 1
+            nbomba = 0
         else
+            
             dx,dy = bomb:getDimensions()
             tipoel = 2
+            nbomba = nbomba + 1
         end
 
 
@@ -361,6 +373,7 @@ function posicao_elemento(dt)
 
 end
 
+
 function desenha_elementos()
 
     for _,el in pairs(elementos) do
@@ -375,6 +388,7 @@ function desenha_elementos()
     end
 
 end
+
 
 function collision(el,key)
     local _,ad = asteroide:getDimensions() -- Diametro da colisão do asteroide
@@ -398,6 +412,7 @@ function collision(el,key)
 
         local dcol = math.sqrt( (asx-(el.x))^2 + (asy-(el.y))^2 )
 
+
         if dcol <= ad-30 then
             elementos[key] = nil
 
@@ -409,25 +424,26 @@ end
 
 
 function desenha_hghscore()
-  
+
     love.graphics.setColor(255,255,0)
-    
+
     local user = highscore.user()
-    
+
     menu:set(user)
     local dx,dy = menu:getDimensions() -- dx = 150, dy = 340
 
     love.graphics.draw(menu,w/2-200,300)
-    
+
     local score = highscore.score()
-    
+
     menu:set(score)
-    
+
     love.graphics.draw(menu,w/2+100,300)
 end
 
+
 function desenha_tituloHS()
-  
+
     menuT:set('top scores')
     tx,ty = menuT:getDimensions()
 
@@ -435,28 +451,113 @@ function desenha_tituloHS()
     love.graphics.draw(menuT,w/2-tx/2,100)
 end
 
+
 function aviso_menu()
-  
+
     menu:set('para retornar ao menu aperte "enter"')
     tx,ty = menu:getDimensions()
-    
+
     love.graphics.setColor(255,255,0)
     love.graphics.draw(menu,w/2-tx/2,h-ty*2)
+end
+
+
+function exibe_pontuacao()
+    pontuacao:set(pont)
+
+    ptx,pty = pontuacaotxt:getDimensions()
+    px,py = pontuacao:getDimensions()
+
+    love.graphics.setColor(255,255,0)
+    love.graphics.draw(pontuacaotxt,w-ptx-110,h-pty-30)
+    love.graphics.draw(pontuacao,w-px-10,h-py-30)
+end
+
+
+function robo()
+    local _,ad = asteroide:getDimensions()
+
+    local bombas = {}
+    local perigo = false
+    
+    for _,el in pairs(elementos) do
+        if el.tipo==2 then
+            bombas[#bombas+1] = el
+        end
+    end
+    table.sort(bombas,function(a,b) return a.y>b.y end) 
+
+    if #bombas>0 then
+        for i=1,#bombas do
+            local deltax = math.abs(bombas[i].x - asx)
+
+            local deltay = math.abs(bombas[i].y - asy)
+            
+            if deltay<1/4*h then
+                perigo=true
+            end
+
+            if deltax <= 10 and deltay <= ad+10+velocidade and deltay>-ad/2 then
+
+
+                if asx-(1/nfaixas)*w<=10 then
+                    mov = 1
+                    
+                elseif asx+(1/nfaixas)*w>=w  then
+                    mov = -1
+                    
+                else
+                    for a=1,#bombas do
+                        local decisao=false
+                        if bombas[a].x-asx>10 then
+                            mov = -1
+
+                            decisao=true
+                            break
+                        elseif asx-bombas[a].x>10 then
+                            mov = 1
+
+                            decisao=true
+                            break
+                        end
+                    end
+                    if not decisao then 
+
+                        mov = -1
+                    end
+                end
+            end
+
+
+        end
+    end
+    if perigo==false then
+        centraliza()
+    end
+end
+
+
+function centraliza()
+    if asx+(1/nfaixas)*w>=w then
+        mov = -1
+    elseif asx - (1/nfaixas)*w <= 0 then
+        mov = 1
+    end
 end
 
 
 function love.keypressed(key)
 
     if estado=='menu' then
-      
+
         if key=='return' then
             estado='game' -- Inicia jogo
             starttime=os.time() -- Tempo de inicio do jogo
-          end
-          
+        end
+
         if key=='r' then
             estado='end'
-          end
+        end
     end
 
 
@@ -471,9 +572,9 @@ function love.keypressed(key)
     end
 
     if estado=='end' then
-      if key == 'return' then
-        love.load()
-      end
+        if key == 'return' then
+            love.load()
+        end
     end
 end
 
@@ -490,20 +591,14 @@ function love.update(dt)
         exec_mov(dt)
         posicao_elemento(dt)
 
+        if teste==true and #elementos>0 then
+            robo(el)
+        end
+
     end
 
 end
 
-function exibe_pontuacao()
-    pontuacao:set(pont)
-    
-    ptx,pty = pontuacaotxt:getDimensions()
-    px,py = pontuacao:getDimensions()
-
-    love.graphics.setColor(255,255,0)
-    love.graphics.draw(pontuacaotxt,w-ptx-110,h-pty-30)
-    love.graphics.draw(pontuacao,w-px-10,h-py-30)
-end
 
 function love.draw()
 
@@ -516,11 +611,11 @@ function love.draw()
     if estado=='game' then
         faz_background()
         faz_explosao()
-        exibe_pontuacao()
-        desenha_hp()
         desenha_trilha()    
         desenha_elementos()
         desenha_asteroide()
+        exibe_pontuacao()
+        desenha_hp()
     end
 
     if estado=='end' then
