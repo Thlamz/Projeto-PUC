@@ -56,7 +56,7 @@ function highscore.user()
   
   string = ''
   
-  for i = 1,11 do
+  for i = 1,15 do
     string = string..table[i][1]..'\n'
   end
   
@@ -69,7 +69,7 @@ function highscore.score()
   
   string = ''
   
-  for i = 1,11 do
+  for i = 1,15 do
     string = string..table[i][2]..'\n'
   end
   
