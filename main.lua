@@ -15,7 +15,7 @@ function love.load()
     pontuacao = love.graphics.newText(menuf,pont)
     --Tela
     love.window.setTitle('Projeto Final')
-    love.window.setMode(800,950)
+    love.window.setMode(800,750)
     love.graphics.setBackgroundColor(0,0,0)
     w,h = love.graphics.getDimensions() -- Dimensões(global)
     -------------------------------//-------------------------------
@@ -184,10 +184,11 @@ function desenha_hp()
     end
 
     if vida<=0 then
-        estado = 'end'
 
         highscore.append(minhamat,pont) -- Adiciona e ordena seu nome às scores
         highscore.order()
+        
+        love.load()
     end
 
 end
@@ -195,7 +196,7 @@ end
 function faz_backgroundmenu()
     local X,Y = backgroundmenu:getDimensions()
     love.graphics.setColor(255,255,255)
-    love.graphics.draw(backgroundmenu,0,-100)
+    love.graphics.draw(backgroundmenu,0,-300)
 end
 
 function desenha_titulo()

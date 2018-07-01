@@ -1,5 +1,7 @@
+thiago 5000
 rodrigo 4820
 thiago 4160
+rodrigo 2740
 lamenza 2600
 teste 2100
 rodrigo 2020
@@ -12,4 +14,3 @@ thiago 580
 rodrigo 440
 rodrigo 320
 rodrigo 320
-thiago 3001810981 220
