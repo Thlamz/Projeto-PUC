@@ -96,9 +96,16 @@ function faz_explosao()
     if expx and expy then
         local x,y,modo = expx,expy,extipo
         expx,expy,extipo = nil,nil,nil
+        
+        if modo==1 then
+            pont = pont+20
+
+        elseif modo==2 then
+            vida = vida-1
+        end
 
         if #exp==0 then
-            exp[1] = {x=x,y=y,s=1,t=0,modo=modo}
+            exp[1] = {x=x,y=y,s=1,t=0}
         end
 
         for i=1,#exp+1 do
@@ -124,12 +131,6 @@ function faz_explosao()
         end
 
         if el.s>8 then
-            if el.modo==1 then
-                pont = pont+20
-
-            elseif el.modo==2 then
-                vida = vida-1
-            end
 
             exp[key] = nil
 
