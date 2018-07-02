@@ -244,7 +244,7 @@ function cria_trilha(dt) -- Trilha do asteroide
     for i=1,ntri do
         if trilha[i].y>=h+20 then -- Reseta a trilha ao sair da tela
 
-            esc = math.floor(math.random(2,12)/2) -- Escolhe um numero que sera a fila
+            esc = math.floor(math.random(2,12)/2) -- Escolhe um numero que será a fila
             trilha[i].x = (asx-ay/2)+fila[esc]            
             trilha[i].y = 3/4*h+ay/4
 
@@ -264,7 +264,7 @@ function desenha_trilha()
 end
 
 
-function coord_mov(msg) -- coordena a movimentação
+function coord_mov(msg) -- Coordena a movimentação
     estado='game'
 
 
@@ -284,18 +284,18 @@ end
 
 function exec_mov(dt) -- Executa movimento
 
-    if math.abs(asx - (nfaixas-1)*w/nfaixas) <= 30 and mov==1 then --Impede que saia da tela pela direita
+    if math.abs(asx - (nfaixas-1)*w/nfaixas) <= 30 and mov==1 then -- Impede que saia da tela pela direita
         mov = 0
         dist = 0
     end
 
-    if math.abs(asx-w/nfaixas) <= 30 and mov==-1 then --Impede que saia da tela pela esquerda
+    if math.abs(asx-w/nfaixas) <= 30 and mov==-1 then -- Impede que saia da tela pela esquerda
         mov = 0
         dist = 0
     end
 
 
-    dist = dist + (1/nfaixas*w)*dt*vmov*math.abs(mov) -- Essa formula garante velocidade fixa independente da velocidade do computador
+    dist = dist + (1/nfaixas*w)*dt*vmov*math.abs(mov) -- Essa fórmula garante velocidade fixa independente da velocidade do computador
 
     asx = asx + (1/nfaixas*w)*dt*vmov*mov
 
@@ -319,7 +319,7 @@ function posicao_elemento(dt)
             elementos[key]=nil
         end
 
-        if el.y > asy - el.dy then -- Conserva recursos so chamando a colisao quando o objeto esta proximo
+        if el.y > asy - el.dy then -- Conserva recursos só chamando a colisão quando o objeto esta proximo
             collision(el,key)
         end
     end
@@ -387,8 +387,6 @@ function collision(el,key)
 
     if el.tipo==1 then
 
-        local _,ad = asteroide:getDimensions() -- Diametro da colisão do asteroide
-
         local dcol = math.sqrt( (asx-(el.x))^2 + (asy-(el.y))^2 )
 
         if dcol <= ad-20 then
@@ -399,8 +397,6 @@ function collision(el,key)
     end
 
     if el.tipo==2 then
-
-        local _,ad = asteroide:getDimensions() -- Diametro da colisão do asteroide
 
         local dcol = math.sqrt( (asx-(el.x))^2 + (asy-(el.y))^2 )
 
@@ -582,7 +578,6 @@ function love.update(dt)
 
     if estado=='game' then
         rot = rot + dt*math.pi/5 -- Rotaciona o asteroide a cada update
-        tempo_de_jogo()
         cria_trilha(dt)
         exec_mov(dt)
         posicao_elemento(dt)
