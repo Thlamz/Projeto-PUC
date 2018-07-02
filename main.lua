@@ -27,7 +27,7 @@ function love.load()
     nfaixas = 3 -- Número de faixas na movimentação
     mov = 0 --Estado inicial da movimentação
     dist = 0 -- Variavel auxiliar "distância", para a movimentação
-    nfaixas = nfaixas+1 --Não alterar(ajusta para o número real de faixas)
+    nfaixas = nfaixas+1 -- Ajusta para o número real de faixas
     -------------------------------//------------------------------
     --Sprites
     asteroide = love.graphics.newImage('asteroide.png')
