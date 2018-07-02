@@ -3,7 +3,7 @@ high = require('highscore')
 
 
 function love.load()
-    minhamat = '1810981' -- Sua matricula
+    meuusuario = '1810981' -- Sua matricula
 
 
     teste = false -- Modo de teste
@@ -22,7 +22,7 @@ function love.load()
     w,h = love.graphics.getDimensions() -- Dimensões(global)
     -------------------------------//-------------------------------
     --Movimentação
-    msgr.start(minhamat,'asteroide',coord_mov) -- Ao receber mensagem executa a função coord_mov
+    msgr.start(meuusuario,'asteroide',coord_mov) -- Ao receber mensagem executa a função coord_mov
     vmov= 5 -- Velocidade da movimentação
     nfaixas = 3 -- Número de faixas na movimentação
     mov = 0 --Estado inicial da movimentação
@@ -180,9 +180,9 @@ function desenha_hp()
 
     if vida<=0 then
         if teste==true then
-            minhamat = 'robo'
+            meuusuario = 'robo'
         end
-        highscore.append(minhamat,pont) -- Adiciona e ordena seu nome às scores
+        highscore.append(meuusuario,pont) -- Adiciona e ordena seu nome às scores
         highscore.order()
 
         love.load()
