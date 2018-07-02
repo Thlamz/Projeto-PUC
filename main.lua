@@ -330,17 +330,17 @@ function posicao_elemento(dt)
 
     if ultimoel==-1 or dtempo>dificuldade then -- Mais elementos conforme o tempo passa
         local tipoel = math.floor(math.random(1,6))
-        
+
         if nbomba>=2 then
             tipoel=2
         end
-        
+
         if tipoel>1 then
             dx,dy=93,96
             tipoel = 1
             nbomba = 0
         else
-            
+
             dx,dy = bomb:getDimensions()
             tipoel = 2
             nbomba = nbomba + 1
@@ -385,29 +385,15 @@ end
 function collision(el,key)
     local _,ad = asteroide:getDimensions() -- Diametro da colisão do asteroide
 
-    if el.tipo==1 then
 
-        local dcol = math.sqrt( (asx-(el.x))^2 + (asy-(el.y))^2 )
+    local dcol = math.sqrt( (asx-(el.x))^2 + (asy-(el.y))^2 )
+    if dcol <= ad-20 then
+        elementos[key] = nil
 
-        if dcol <= ad-20 then
-            elementos[key] = nil
-
-            expx,expy,extipo = el.x,el.y,el.tipo
-        end
+        expx,expy,extipo = el.x,el.y,el.tipo
     end
 
-    if el.tipo==2 then
 
-        local dcol = math.sqrt( (asx-(el.x))^2 + (asy-(el.y))^2 )
-
-
-        if dcol <= ad-30 then
-            elementos[key] = nil
-
-            expx,expy,extipo = el.x,el.y,el.tipo
-
-        end  
-    end
 end
 
 
@@ -467,20 +453,20 @@ function robo()
 
     local bombas = {}
     local perigo = false
-    
+
     for _,el in pairs(elementos) do
         if el.tipo==2 and el.y<asy + ad/2 then
             bombas[#bombas+1] = el
         end
     end
-    
+
     if #bombas>0 then
         table.sort(bombas,function(a,b) return a.y>b.y end) 
         for i=1,#bombas do
             local deltax = math.abs(bombas[i].x - asx)
 
             local deltay = asy - bombas[i].y
-            
+
             if deltay<3/4*h then
                 perigo=true
             end
@@ -490,12 +476,12 @@ function robo()
 
                 if asx-(1/nfaixas)*w<=10 then
                     mov = 1
-                    
+
                 elseif asx+(1/nfaixas)*w>=w  then
                     mov = -1
-                    
+
                 else
-                    
+
                     local decisao=false
                     for a=1,#bombas do
                         if bombas[a].x>w/2 then
@@ -503,11 +489,11 @@ function robo()
 
                             decisao=true
                             break
-                            
+
                         elseif bombas[a].x<w/2 then
                             mov = 1
                             print('direita')
-                            
+
                             decisao=true
                             break
                         end
@@ -522,7 +508,7 @@ function robo()
 
         end
     end
-    
+
     if perigo==false then
         centraliza()
     end
